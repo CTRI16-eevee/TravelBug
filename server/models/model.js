@@ -20,9 +20,9 @@ const pool = new Pool({
 //   done();
 // });
 
-pool.on('connect', () => {
-  console.log('Connected to PostgreSQL!');
-});
+// pool.on('connect', () => {
+//   console.log('Connected to PostgreSQL!');
+// });
 
 // We export an object that contains a property called query,
 // which is a function that returns the invocation of pool.query() after logging the query

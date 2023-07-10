@@ -3,8 +3,9 @@ const HTMLWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
+  mode: process.env.NODE_ENV || 'production',
   output: {
-    path: path.join(__dirname, '/build'),
+    path: path.join(__dirname, '/client/build'),
     filename: 'bundle.js',
   },
   plugins: [
@@ -15,7 +16,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -30,5 +31,18 @@ module.exports = {
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
     ],
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
+
+  devServer: {
+    hot: true,
+    historyApiFallback: true,
+    proxy: {
+      '/': 'http://localhost:3000',
+      secure: true,
+      changeOrigin: true,
+    },
   },
 };

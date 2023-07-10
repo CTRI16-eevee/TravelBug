@@ -35,16 +35,3 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
-
-// pool.connect((err, client, done) => {
-//   if (err) {
-//     console.error('Error connecting to PostgreSQL:', err);
-//     return;
-//   }
-//   console.log('Connected to PostgreSQL!');
-//   // Do further operations with the client if needed
-//   // ...
-
-//   // Close the connection
-//   done();
-// });
