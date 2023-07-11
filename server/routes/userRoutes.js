@@ -2,16 +2,46 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 
-router.post('/signup', userController.checkUser, userController.addUser, (req, res, next) => {
-  res.status(200).json(res.locals.newUser);
-})
+router.post(
+  '/signup',
+  userController.checkUser,
+  userController.addUser,
+  userController.signJWT,
+  (req, res, next) => {
+    res.status(200).json(res.locals.newUser);
+  },
+);
 
-router.post('/login', userController.loginUser, (req, res, next) => {
+router.post(
+  '/login',
+  userController.loginUser,
+  userController.signJWT,
+  (req, res, next) => {
     res.status(200).json(res.locals.userInfo);
-}); // logging in existing user
+  },
+);
 
-router.get('/profile',) // getting profle data
+router.post('/logout',
+  userController.verifyJWT,
+  userController.logoutUser,
+  (req, res, next) => {
+    res.sendStatus(200);
+  }
+)
 
-router.patch('/picture',)
+router.get('/profile'); // getting profle data
 
-module.exports = router
+router.patch('/edit',
+  userController.verifyJWT,
+  userController.editUser,
+); // editing user account
+
+router.delete('/delete',
+  userController.verifyJWT,
+  userController.deleteUser,
+  (req, res, next) => {
+    res.sendStatus(200);
+  }
+); // deleting account
+
+module.exports = router;
