@@ -1,8 +1,9 @@
 const db = require('../models/model');
+const bcrypt = require('bcrypt');
 
 const userController = {};
 
-userController.addUser = async (req, res, next) => {
+userController.checkUser = async (req, res, next) => {
   try {
     //Deconstruct data from request body
     const { username, password } = req.body;
@@ -13,25 +14,63 @@ userController.addUser = async (req, res, next) => {
       FROM _user 
       WHERE username = $1
     `;
-    const result = await db.query(check, values);
+    const result = await db.query(check, [username]);
     if (!result.rows.length) {
-      // add row to user table
-      const addQuery = `
+      res.locals.username = username;
+      res.locals.password = password;
+      console.log('THIS IS NEW USER', res.locals.username, res.locals.password);
+      next();
+    } else {
+      // user already exists
+      return next({ error: 'Username already exists' });
+    }
+  } catch (error) {
+    return next(error);
+  }
+};
+
+userController.addUser = async (req, res, next) => {
+  try {
+    const { username } = res.locals;
+    const { password } = res.locals;
+    const saltRounds = 10;
+
+    const hashedPass = await bcrypt.hash(password, saltRounds);
+    console.log('THIS IS HASHED PASS', hashedPass);
+    const values = [username, hashedPass];
+    const addQuery = `
         INSERT INTO
           _user (username, password) 
         VALUES 
           ($1, $2) 
         RETURNING *
       `;
-      const addResult = await db.query(addQuery, values);
-      res.locals.newUser = addResult.rows; // probably want to just destructure and persist userID, might be addResult.rows[0]?
-      console.log('THIS IS NEW USER', res.locals.newUser);
-      next();
-    } else {
-      // user already exists
-      return res.status(409).json({ error: 'Username already exists' });
-    }
+    const addResult = await db.query(addQuery, values);
+    res.locals.newUser = addResult.rows;
+    console.log('THIS IS NEW USER', res.locals.newUser);
+    next();
   } catch (error) {
-    return next(error);
+    next(error);
   }
 };
+
+userController.loginUser = async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    const values = [username];
+    const text = `
+      SELECT *
+      FROM _user
+      WHERE username = $1
+    `;
+    const userExists = db.query(text, values);
+    if (!userExists.rows.length) {
+      return next({ error: 'User does not exist' });
+    }
+    // bcrypt compare with userExists.rows[0].password
+  } catch (err) {
+    return next(err);
+  }
+};
+
+module.exports = userController;
