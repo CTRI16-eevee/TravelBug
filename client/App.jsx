@@ -1,12 +1,4 @@
 import * as React from 'react';
-// import {
-//   // BrowserRouter as Router,
-//   createBrowserRouter,
-//   RouterProvider,
-//   // Routes,
-//   // Route,
-//   // Link,
-// } from 'react-router-dom';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Login from './src/pages/Login';
 import Signup from './src/pages/Signup';

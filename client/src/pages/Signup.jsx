@@ -18,7 +18,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { set, get } from 'idb-keyval';
-import CryptoJS from 'crypto-js';
+
 import AES from 'crypto-js/aes';
 
 // import utilities
@@ -49,41 +49,80 @@ export default function Signup() {
   const [secretInput, setSecretInput] = useState('');
   const [signupErrorText, setSignupErrorText] = useState(null);
 
-  function submitHandler() {
-    /* check to see if the username is available by searching IndexedDB
-    if available, add username as key to IndexedDB and populate value with an encrypted
-    JSON object using the password as the AES secret
-    */
-    const initialUserData = { decryption: 'isValid', dbs: [] };
-    const ciphertext = AES.encrypt(
-      JSON.stringify(initialUserData),
-      secretInput
-    ).toString();
 
-    get(usernameInput)
-      .then((data) => {
-        if (data === undefined) {
-          set(usernameInput, ciphertext)
-            .then(() => {
-              navigate('/');
-              console.log('signup successful')
-            })
-            .catch((err) => {
-              console.log('IndexedDB: set failed', err);
-            });
+//KT's code for signing up a new user in IndexDB
+  // function submitHandler() {
+  //   /* check to see if the username is available by searching IndexedDB
+  //   if available, add username as key to IndexedDB and populate value with an encrypted
+  //   JSON object using the password as the AES secret
+  //   */
+  //   const initialUserData = { decryption: 'isValid', dbs: [] };
+  //   const ciphertext = AES.encrypt(
+  //     JSON.stringify(initialUserData),
+  //     secretInput
+  //   ).toString();
+
+  //   get(usernameInput)
+  //     .then((data) => {
+  //       if (data === undefined) {
+  //         set(usernameInput, ciphertext)
+  //           .then(() => {
+  //             navigate('/');
+  //             console.log(data)
+  //           })
+  //           .catch((err) => {
+  //             console.log('IndexedDB: set failed', err);
+  //           });
+  //       } else {
+  //         setSignupErrorText('incorrect username or password');
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log('IndexedDB: get failed', err);
+  //     });
+
+  //   setUsernameInput('');
+  //   setSecretInput('');
+  //   setSignupErrorText(null);
+  // }
+
+  function submitHandler() {
+    const userData = {
+      username: usernameInput,
+      password: secretInput,
+    };
+  
+    fetch('http://localhost:3000/user/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          // The POST request was successful
+          return response.json();
         } else {
-          setSignupErrorText('incorrect username or password');
+          // The POST request failed
+          throw new Error('Failed to create a new user');
         }
       })
-      .catch((err) => {
-        console.log('IndexedDB: get failed', err);
+      .then((data) => {
+        // Handle the response data
+        console.log(data);
+        navigate('/');
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error(error);
+        setSignupErrorText('Incorrect username and password');
       });
-
+  
     setUsernameInput('');
     setSecretInput('');
-    setSignupErrorText(null);
   }
-
+  
 
   const handleSubmit = (event) => {
     event.preventDefault();
