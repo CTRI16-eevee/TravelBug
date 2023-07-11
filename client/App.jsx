@@ -58,9 +58,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <ThemeProvider theme={darkTheme}>
+
     <RouterProvider router={router} />
-    </ThemeProvider>
+
   );
 }
 
