@@ -23,8 +23,8 @@ app.use('/user', userRoutes);
 // app.use('/feed', feedRoutes);
 
 // on visiting homepage, send index.html file
-app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/build/index.html'));
+app.get('/*', (req, res) => {
+  return res.status(200).sendFile(path.resolve(__dirname, '../client/build/index.html'));
 });
 
 // 404
