@@ -2,7 +2,6 @@ import React from 'react'
 import { Card, Typography, InputAdornment, CardActions, IconButton, Grid } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 const Comment = ({ comment, i }) => {
-  console.log("inside comment", comment, i);
   return (
     <Card key={i + 'a'} sx={{ minWidth: 345, margin: 1}}>
       <Grid container direction="row" alignItems="center">
@@ -23,4 +22,4 @@ const Comment = ({ comment, i }) => {
   );
 };
 
-export default Comment
+export default Comment;
