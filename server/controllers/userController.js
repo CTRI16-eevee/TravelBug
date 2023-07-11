@@ -26,7 +26,8 @@ userController.checkUser = async (req, res, next) => {
       return next({ error: 'Username already exists' });
     }
   } catch (error) {
-    return next(error);
+    console.log('ERROR OCCURRED IN userController.checkUser: ', error);
+    return next({ error: 'Error occurred in unknown middleware' });
   }
 };
 
@@ -50,7 +51,8 @@ userController.addUser = async (req, res, next) => {
     console.log('THIS IS NEW USER', res.locals.newUser);
     next();
   } catch (error) {
-    next(error);
+    console.log('ERROR OCCURRED IN userController.addUser: ', error);
+    next({ error: 'Error occured trying to add new user' });
   }
 };
 
@@ -78,8 +80,9 @@ userController.loginUser = async (req, res, next) => {
       profilePicture: userExists.rows[0].profile_picture,
     };
     return next();
-  } catch (err) {
-    return next({ error: 'Error in userControlller.loginUser' });
+  } catch (error) {
+    console.log('ERROR OCCURRED IN userController.loginUser: ', error);
+    return next({ error: 'Error occured trying to login' });
   }
 };
 
@@ -94,7 +97,8 @@ userController.signJWT = async (req, res, next) => {
     });
     return next();
   } catch (err) {
-    return next({ error: 'Error in userController.signJWT' });
+    console.log('ERROR OCCURRED IN userController.signJWT: ', err);
+    return next({ error: 'Error occured authorizing user' });
   }
 };
 
@@ -109,7 +113,8 @@ userController.verifyJWT = async (req, res, next) => {
     console.log('THIS IS VERIFY', verify);
     next();
   } catch (err) {
-    return next({ error: 'Error in userController.verifyJWT' });
+    console.log('ERROR OCCURRED IN userController.verifyJWT: ', err);
+    return next({ error: 'Error occurred authorizing user' });
   }
 };
 
@@ -118,7 +123,8 @@ userController.logoutUser = async (req, res, next) => {
     res.clearCookie('jwt');
     next();
   } catch (err) {
-    return next({ error: 'Error in userController.logoutUser' });
+    console.log('ERROR OCCURRED IN userController.logoutUser: ', err);
+    return next({ error: 'Error occurred while logging out user' });
   }
 };
 
@@ -137,7 +143,8 @@ userController.deleteUser = async (req, res, next) => {
     console.log(deletedUser.rows);
     return next();
   } catch (err) {
-    return next({ error: 'error in userController.deleteUser' });
+    console.log('ERROR OCCURRED IN userController.deleteUser: ', err);
+    return next({ error: 'error occurred deleting user' });
   }
 };
 
@@ -190,7 +197,8 @@ userController.editUser = async (req, res, next) => {
     }
     return next();
   } catch (err) {
-    return next({ error: 'error in userController.editUser' });
+    console.log('ERROR OCCURRED IN userController.editUser: ', err);
+    return next({ error: 'error occurred while updating profile' });
   }
 };
 
