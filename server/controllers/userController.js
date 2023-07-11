@@ -37,7 +37,7 @@ userController.addUser = async (req, res, next) => {
     const saltRounds = 10;
 
     const hashedPass = await bcrypt.hash(password, saltRounds);
-    console.log('THIS IS HASHED PASS', hashedPass);
+    // console.log('THIS IS HASHED PASS', hashedPass);
     const values = [username, hashedPass];
     const addQuery = `
         INSERT INTO
@@ -48,7 +48,7 @@ userController.addUser = async (req, res, next) => {
       `;
     const addResult = await db.query(addQuery, values);
     res.locals.newUser = addResult.rows;
-    console.log('THIS IS NEW USER', res.locals.newUser);
+    // console.log('THIS IS NEW USER', res.locals.newUser);
     next();
   } catch (error) {
     console.log('ERROR OCCURRED IN userController.addUser: ', error);
@@ -66,7 +66,7 @@ userController.loginUser = async (req, res, next) => {
       WHERE username = $1
     `;
     const userExists = await db.query(text, values);
-    console.log(userExists.rows);
+    // console.log(userExists.rows);
     if (!userExists.rows.length) {
       return next({ error: 'User does not exist' });
     }
@@ -105,12 +105,12 @@ userController.signJWT = async (req, res, next) => {
 // will be used for verifying authorization to secret routes
 userController.verifyJWT = async (req, res, next) => {
   try {
-    console.log('THIS IS HEADER', req.headers);
+    // console.log('THIS IS HEADER', req.headers);
     const { cookie } = req.headers;
-    console.log('THIS IS COOKIE', cookie);
+    // console.log('THIS IS COOKIE', cookie);
     const jwtToken = cookie.slice(4);
     const verify = await jwt.verify(jwtToken, process.env.ACCESS_TOKEN_SECRET);
-    console.log('THIS IS VERIFY', verify);
+    // console.log('THIS IS VERIFY', verify);
     next();
   } catch (err) {
     console.log('ERROR OCCURRED IN userController.verifyJWT: ', err);
@@ -140,7 +140,7 @@ userController.deleteUser = async (req, res, next) => {
       RETURNING *
     `;
     const deletedUser = await db.query(text, values);
-    console.log(deletedUser.rows);
+    // console.log(deletedUser.rows);
     return next();
   } catch (err) {
     console.log('ERROR OCCURRED IN userController.deleteUser: ', err);
@@ -164,7 +164,7 @@ userController.editUser = async (req, res, next) => {
           RETURNING *
         `;
         const newUsername = await db.query(usernameQuery, values);
-        console.log(newUsername.rows);
+        // console.log(newUsername.rows);
       } else {
         return next({ error: 'Username already exists' });
       }
@@ -179,7 +179,7 @@ userController.editUser = async (req, res, next) => {
         RETURNING *
       `;
       const updatedUser = await db.query(profPicQuery, values);
-      console.log(updatedUser.rows);
+      // console.log(updatedUser.rows);
     }
     // to update password
     if (password) {
@@ -193,12 +193,41 @@ userController.editUser = async (req, res, next) => {
         RETURNING * 
       `;
       const newPassword = await db.query(passwordQuery, values);
-      console.log(newPassword.rows);
+      // console.log(newPassword.rows);
     }
     return next();
   } catch (err) {
     console.log('ERROR OCCURRED IN userController.editUser: ', err);
     return next({ error: 'error occurred while updating profile' });
+  }
+};
+
+userController.getInfo = async (req, res, next) => {
+  try {
+    console.log(req.params);
+    const { id } = req.params;
+    const values = [id];
+    // const userInfoQuery = `
+    // SELECT
+    // FROM _user
+    // WHERE id = $1
+    // `;
+    const userPostsQuery = `
+    SELECT *
+    FROM _post
+    WHERE author_id = $1
+    `;
+    // const userInfo = await db.query(userInfoQuery, values);
+    const userPosts = await db.query(userPostsQuery, values);
+    res.locals.allInfo = {
+      userPosts: userPosts.rows,
+      // userInfo: userInfo.rows[0],
+    };
+    console.log(res.locals.allInfo);
+    return next();
+  } catch (err) {
+    console.log('ERROR OCCURRED IN userController.getInfo: ', err);
+    return next({ error: 'error occurred while getting info' });
   }
 };
 

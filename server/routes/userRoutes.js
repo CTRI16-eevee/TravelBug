@@ -30,7 +30,9 @@ router.post(
   }
 );
 
-router.get('/profile'); // getting profle data
+router.get('/:id', userController.getInfo, (req, res, next) => {
+  res.status(200).json(res.locals.allInfo);
+}); // getting profile data, including post info
 
 router.patch(
   '/edit',
