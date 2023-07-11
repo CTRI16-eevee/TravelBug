@@ -4,18 +4,21 @@ const jwt = require('jsonwebtoken');
 
 const userController = {};
 
-userController.checkUser = async (req, res, next) => {
-  try {
-    //Deconstruct data from request body
-    const { username } = req.body;
-    //Process obtained data
-    const values = [username];
-    const check = `
+const doesUserNameExist = async (username) => {
+  const check = `
       SELECT * 
       FROM _user 
       WHERE username = $1
     `;
-    const result = await db.query(check, [username]);
+  const result = await db.query(check, [username]);
+  return result;
+};
+
+userController.checkUser = async (req, res, next) => {
+  try {
+    //Deconstruct data from request body
+    const { username } = req.body;
+    const result = await doesUserNameExist(username);
     if (!result.rows.length) {
       next();
     } else {
@@ -76,13 +79,13 @@ userController.loginUser = async (req, res, next) => {
     };
     return next();
   } catch (err) {
-    return next({error: "Error in userControlller.loginUser"});
+    return next({ error: 'Error in userControlller.loginUser' });
   }
 };
 
 userController.signJWT = async (req, res, next) => {
   try {
-    const {username} = req.body;
+    const { username } = req.body;
     const token = jwt.sign({ username }, process.env.ACCESS_TOKEN_SECRET);
     await res.cookie('jwt', token, {
       maxAge: 86400000,
@@ -91,16 +94,16 @@ userController.signJWT = async (req, res, next) => {
     });
     return next();
   } catch (err) {
-    return next({ error: 'Error in userController.signJWT' })
+    return next({ error: 'Error in userController.signJWT' });
   }
-}
+};
 
 // will be used for verifying authorization to secret routes
 userController.verifyJWT = async (req, res, next) => {
   try {
-    console.log('THIS IS HEADER', req.headers)
+    console.log('THIS IS HEADER', req.headers);
     const { cookie } = req.headers;
-    console.log('THIS IS COOKIE', cookie)
+    console.log('THIS IS COOKIE', cookie);
     const jwtToken = cookie.slice(4);
     const verify = await jwt.verify(jwtToken, process.env.ACCESS_TOKEN_SECRET);
     console.log('THIS IS VERIFY', verify);
@@ -108,21 +111,21 @@ userController.verifyJWT = async (req, res, next) => {
   } catch (err) {
     return next({ error: 'Error in userController.verifyJWT' });
   }
-}
+};
 
 userController.logoutUser = async (req, res, next) => {
   try {
     res.clearCookie('jwt');
     next();
   } catch (err) {
-    return next({ error: 'Error in userController.logoutUser' })
+    return next({ error: 'Error in userController.logoutUser' });
   }
-}
+};
 
 userController.deleteUser = async (req, res, next) => {
   try {
-    const {id} = req.body;
-    const values = [id]
+    const { id } = req.body;
+    const values = [id];
     const text = `
       DELETE FROM
         _user
@@ -134,25 +137,61 @@ userController.deleteUser = async (req, res, next) => {
     console.log(deletedUser.rows);
     return next();
   } catch (err) {
-    return next({ error: 'error in userController.deleteUser' })
+    return next({ error: 'error in userController.deleteUser' });
   }
 };
 
 userController.editUser = async (req, res, next) => {
   try {
-    const {id, username, profile_picture} = req.body;
+    const { id, username, password, profile_picture } = req.body;
     // query to update username
     if (username) {
-      this.checkUser(req,)
+      const result = await doesUserNameExist(username);
+      if (!result.rows.length) {
+        // change username where id = $1
+        const values = [username, id];
+        const usernameQuery = `
+          UPDATE _user
+          SET username = $1
+          WHERE id = $2
+          RETURNING *
+        `;
+        const newUsername = await db.query(usernameQuery, values);
+        console.log(newUsername.rows);
+      } else {
+        return next({ error: 'Username already exists' });
+      }
     }
     // to update profile_picture
     if (profile_picture) {
-      
+      const values = [profile_picture, id];
+      const profPicQuery = `
+        UPDATE _user
+        SET profile_picture = $1
+        WHERE id = $2
+        RETURNING *
+      `;
+      const updatedUser = await db.query(profPicQuery, values);
+      console.log(updatedUser.rows);
     }
+    // to update password
+    if (password) {
+      const saltRounds = 10;
+      const hashedPass = await bcrypt.hash(password, saltRounds);
+      const values = [hashedPass, id];
+      const passwordQuery = `
+        UPDATE _user
+        SET password = $1
+        WHERE id = $2
+        RETURNING * 
+      `;
+      const newPassword = await db.query(passwordQuery, values);
+      console.log(newPassword.rows);
+    }
+    return next();
   } catch (err) {
-    return next({ error: 'error in userController.editUser' })
+    return next({ error: 'error in userController.editUser' });
   }
-}
-
+};
 
 module.exports = userController;
