@@ -17,15 +17,16 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Star from '@mui/icons-material/Star'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { TextField } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
+import Button from '@mui/material/Button';
 const Stars = (rating) => {
   const ratingArr = [];
-  while (rating > 0) {
-    ratingArr.push(<Star/>)
-    rating -= 1
+  for (let i = 0; i < rating; i++) {
+    ratingArr.push(<Star key={i}/>)
   }
   return ratingArr;
 }
-const StarsTest = Stars(5); 
+
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
@@ -87,20 +88,36 @@ export default function Post() {
         >
           <ExpandMoreIcon />
       </ExpandMore>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
           {/* where comments will go when we have them */}
         
           hi hi hi hi hi hi hi hi hi ho ho ho ho ho ho ho ho ho ho ho ho ho hi hi hi hi hi hi hi hi
+
+          hihi
+
+          hihi
         
       </Collapse>
-     
-      <CardContent disableSpacing>
-        <TextField id="outlined-basic" label="Comment" variant="outlined"></TextField>  
+      </CardActions>
+      <CardContent >
+        <TextField id="outlined-basic" multiline label="Comment" InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              {/* input users pfp from props here */}
+              <img className="comment-pfp" src="https://t0.gstatic.com/licensed-image?q=tbn:ANd9GcR1qIrvvnZAf97oi8ywnd93WZd4utSPnwGrXoSufKbexeNooMGlTRJL-H-HuvLhf4mS" />
+            </InputAdornment>
+          ),
+          endAdornment: (
+            <InputAdornment position='end'>
+              <Button>Say it!</Button>
+            </InputAdornment>
+          ),  
+        }} variant="outlined"></TextField>  
       </CardContent>
       
-      </CardActions>
+      
 
-      <CardActions disableSpacing>
+      <CardActions >
         <IconButton aria-label="add to favorites">
           <FavoriteIcon />
         </IconButton>
