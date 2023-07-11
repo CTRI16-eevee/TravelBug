@@ -6,7 +6,9 @@ router.post('/signup', userController.checkUser, userController.addUser, (req, r
   res.status(200).json(res.locals.newUser);
 })
 
-router.post('/login',); // logging in existing user
+router.post('/login', userController.loginUser, (req, res, next) => {
+    res.status(200).json(res.locals.userInfo);
+}); // logging in existing user
 
 router.get('/profile',) // getting profle data
 

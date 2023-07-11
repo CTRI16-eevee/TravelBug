@@ -63,11 +63,18 @@ userController.loginUser = async (req, res, next) => {
       FROM _user
       WHERE username = $1
     `;
-    const userExists = db.query(text, values);
+    const userExists = await db.query(text, values);
+    console.log(userExists.rows);
     if (!userExists.rows.length) {
       return next({ error: 'User does not exist' });
     }
-    // bcrypt compare with userExists.rows[0].password
+    const hash = userExists.rows[0].password;
+    const compare = await bcrypt.compare(password, hash);
+    if (!compare) {
+      return next({ error: 'Incorrect password' });
+    }
+    res.locals.userInfo = { id: userExists.rows[0].id, profilePicture: userExists.rows[0].profile_picture } 
+    return next();
   } catch (err) {
     return next(err);
   }
