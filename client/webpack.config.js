@@ -33,10 +33,16 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js', '.jsx'],
   },
 
   devServer: {
+    static: {
+      // tells webpack dev server where to serve static content
+      directory: path.resolve(__dirname,  '/client/build'),
+      // path must have wildcard so that all routes are served
+      publicPath: '/*',
+    },
     hot: true,
     historyApiFallback: true,
     proxy: {
