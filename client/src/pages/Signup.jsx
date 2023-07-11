@@ -1,3 +1,4 @@
+//import dependencies 
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -13,7 +14,12 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { set, get } from 'idb-keyval';
 
+
+// import utilities
+import useAppStore from '../store/appStore';
 
 function Copyright(props) {
   return (
@@ -35,6 +41,44 @@ const defaultTheme = createTheme();
 export default function Signup() {
 
   const navigate = useNavigate();
+
+  const [usernameInput, setUsernameInput] = useState('');
+  const [secretInput, setSecretInput] = useState('');
+  const [signupErrorText, setSignupErrorText] = useState(null);
+
+  function submitHandler() {
+    /* check to see if the username is available by searching IndexedDB
+    if available, add username as key to IndexedDB and populate value with an encrypted
+    JSON object using the password as the AES secret
+    */
+    const initialUserData = { decryption: 'isValid', dbs: [] };
+    const ciphertext = AES.encrypt(
+      JSON.stringify(initialUserData),
+      secretInput
+    ).toString();
+
+    get(usernameInput)
+      .then((data) => {
+        if (data === undefined) {
+          set(usernameInput, ciphertext)
+            .then(() => {
+              navigate('/login');
+            })
+            .catch((err) => {
+              console.log('IndexedDB: set failed', err);
+            });
+        } else {
+          setSignupErrorText('incorrect username or password');
+        }
+      })
+      .catch((err) => {
+        console.log('IndexedDB: get failed', err);
+      });
+
+    setUsernameInput('');
+    setSecretInput('');
+    setSignupErrorText(null);
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
