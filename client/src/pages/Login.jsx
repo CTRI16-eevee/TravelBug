@@ -1,5 +1,5 @@
 
-//import dependencies 
+//import material UI 
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -14,11 +14,16 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+//import dependencies
 import { useNavigate } from 'react-router-dom';
+import CryptoJS from 'crypto-js';
+import AES from 'crypto-js/aes';
+import { get } from 'idb-keyval';
 
 // import utilities
 import useAppStore from '../store/appStore';
-
+import { useState } from 'react';
 
 function Copyright(props) {
   return (
@@ -40,6 +45,38 @@ const defaultTheme = createTheme();
 export default function Login() {
 
   const navigate = useNavigate();
+
+  const logInUser = useAppStore((state) => state.logInUser);
+
+  const [usernameInput, setUsernameInput] = useState('');
+  const [secretInput, setSecretInput] = useState('');
+  const [loginErrorText, setLoginErrorText] = useState(null);
+
+  function submitHandler() {
+    /* authenticate by checking for a username key within IndexedDB
+    if there is a user, use the password as the AES encryption secret, 
+    and look for a verifiable property on the value object
+    */
+  get(usernameInput)
+  .then((data) => {
+    const bytes = AES.decrypt(data, secretInput);
+    const decryptResponse = bytes.toString(CryptoJS.enc.Utf8);
+    const originalText = JSON.parse(decryptResponse);
+    if (originalText.decryption === 'isValid') {
+      // populate global state store with decrypted IDB value, which holds user data
+      logInUser(usernameInput, secretInput, originalText);
+      setUsernameInput('');
+      setSecretInput('');
+      setLoginErrorText(null);
+      navigate('/feed');
+    } else {
+      setLoginErrorText('incorrect username or password');
+    }
+  })
+  .catch(() => {
+    setLoginErrorText('incorrect username or password');
+  });
+}
 
 
   const handleSubmit = (event) => {
@@ -91,20 +128,27 @@ export default function Login() {
                 required
                 fullWidth
                 id="username"
-                label="Username"
+                label="Username: "
+                value={usernameInput}
+                onChange={(e) => setUsernameInput(e.target.value)}
                 name="username"
                 autoComplete="username"
                 autoFocus
+                error={loginErrorText !== null}
               />
               <TextField
                 margin="normal"
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="Password: "
                 type="password"
+                value={secretInput}
+                onChange={(e) => setSecretInput(e.target.value)}
                 id="password"
                 autoComplete="current-password"
+                error={loginErrorText !== null}
+                helperText={loginErrorText}
               />
               {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
@@ -115,6 +159,8 @@ export default function Login() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+
+                onClick={submitHandler}
               >
                 Sign In
               </Button>

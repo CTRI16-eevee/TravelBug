@@ -1,4 +1,4 @@
-//import dependencies 
+//import material UI  
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -13,10 +13,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+//import dependencies
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { set, get } from 'idb-keyval';
-
+import CryptoJS from 'crypto-js';
+import AES from 'crypto-js/aes';
 
 // import utilities
 import useAppStore from '../store/appStore';
@@ -62,7 +65,8 @@ export default function Signup() {
         if (data === undefined) {
           set(usernameInput, ciphertext)
             .then(() => {
-              navigate('/login');
+              navigate('/');
+              console.log('signup successful')
             })
             .catch((err) => {
               console.log('IndexedDB: set failed', err);
@@ -79,6 +83,7 @@ export default function Signup() {
     setSecretInput('');
     setSignupErrorText(null);
   }
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -135,8 +140,12 @@ export default function Signup() {
                   required
                   fullWidth
                   id="username"
-                  label="Username"
+                  label="Username: "
+                  value={usernameInput}
+                  onChange={(e) => setUsernameInput(e.target.value)}
+                
                   name="username"
+                  error={signupErrorText !== null}
                   autoComplete="username"
                 />
               </Grid>
@@ -145,10 +154,14 @@ export default function Signup() {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="Password: "
                   type="password"
+                  value={secretInput}
+                  onChange={(e) => setSecretInput(e.target.value)}
                   id="password"
                   autoComplete="new-password"
+                  error={signupErrorText !== null}
+                  helperText={signupErrorText}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -170,6 +183,8 @@ export default function Signup() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+
+              onClick={submitHandler}
             >
               Sign Up
             </Button>
