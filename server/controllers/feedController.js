@@ -45,12 +45,13 @@ feedController.addPost = async (req, res, next) => {
 
 feedController.getPosts = async (req, res, next) => {
   try {
-    const getPostQuery = `
-      SELECT p.*, c.name AS continent_name
-      FROM _post AS p
-      JOIN _continent AS c ON p.continent_id = c.id
-      ORDER BY p.date DESC;
-    `;
+  const getPostQuery = `
+    SELECT p.*, c.name AS continent_name, u.username, u.profile_picture
+    FROM _post AS p
+    JOIN _continent AS c ON p.continent_id = c.id
+    JOIN _user AS u ON p.author_id = u.id
+    ORDER BY p.date DESC;
+  `;
     const posts = await db.query(getPostQuery);
     // console.log('THESE ARE THE POSTS:', posts.rows);
     res.locals.posts = posts.rows;
@@ -155,9 +156,10 @@ feedController.getComments = async (req, res, next) => {
     console.log(post_id);
     const values = [post_id];
     const commentQuery = `
-    SELECT *
-    FROM _comment
-    WHERE post_id = $1
+      SELECT c.*, u.username, u.profile_picture
+      FROM _comment AS c
+      JOIN _user AS u ON c.author_id = u.id
+      WHERE c.post_id = $1;
     `;
     const comments = await db.query(commentQuery, values);
     res.locals.comments = comments.rows;
