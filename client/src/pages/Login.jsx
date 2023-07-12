@@ -88,7 +88,7 @@ function submitHandler() {
     password: secretInput,
   };
 
-  fetch('http://localhost:3000/user/login', {
+  fetch('http://localhost:3000/api/user/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

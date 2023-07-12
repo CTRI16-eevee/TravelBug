@@ -11,6 +11,7 @@ module.exports = {
   plugins: [
     new HTMLWebpackPlugin({
       template: './src/index.html',
+      favicon: "./buggy.ico"
     }),
   ],
   module: {
@@ -30,6 +31,10 @@ module.exports = {
         exclude: /node_modules/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i, 
+        loader: 'file-loader',
+      }
     ],
   },
   resolve: {

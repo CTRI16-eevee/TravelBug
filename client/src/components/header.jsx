@@ -1,6 +1,5 @@
-// profile picture
-// Title
-// sign out
+
+// import material UI 
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -23,8 +22,36 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Avatar from '@mui/material/Avatar';
+import useAppStore from '../store/appStore';
+
+
+// profile picture
+// Title
+// sign out
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+import createPost from "./createPost";
+import { Grid } from "@mui/material";
+// Local imports
+import img from "../Assets/buggy.png";
 
 export default function Header() {
+  //checking if user is still logged in
+  const isLoggedIn = useAppStore((state) => state.isLoggedIn);
+  const username = useAppStore((state) => state.username);
+
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -40,62 +67,106 @@ export default function Header() {
     setAnchorEl(null);
   };
 
-
-
-
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose2 = () => {
-    setOpen(false);
-  };
-
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
+  <AppBar position="static">
+    <Toolbar style={{ justifyContent: 'flex-end' }}>
+      <div style={{ marginRight: 'auto' }}>
+        <IconButton
+          size="large"
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+        >
+          <MenuIcon />
+        </IconButton>
+      </div>
+      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        TravelBug
+      </Typography>
+      <div>
+        <Button variant="outlined" onClick={handleClickOpen}>
+          Open form dialog
+        </Button>
+        {/* Rest of your code */}
+      </div>
+      {auth && isLoggedIn && (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              opacity: '80%',
+              fontSize: '1.3rem',
+              marginRight: '0.5rem',
+              marginTop: '0.6rem',
+              verticalAlign: 'middle',
+            }}
           >
+            {username}
+          </Typography>
+          {/* <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            color="inherit"
+            sx={{ verticalAlign: 'middle' }}
+          >
+
+            <AccountCircle />
+          </IconButton> */}
+          <Avatar
+            onClick={handleMenu}
+            alt="travel bug icon"
+            src="/client/assets/TravelBugIcon.png"
+            sx={{ width: 30,
+                  height: 30, 
+                  verticalAlign: 'middle',
+                 
+                }}
+          />
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleClose}>Profile</MenuItem>
+            <MenuItem onClick={handleClose}>Sign Out</MenuItem>
+          </Menu>
+        </div>
+      )}
+    </Toolbar>
+  </AppBar>
+</Box>
+
+
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            TravelBug
-          </Typography>
-          <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open form dialog
-      </Button>
-      <Dialog open={open} onClose={handleClose2}>
-        <DialogTitle>Subscribe</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here. We
-            will send updates occasionally.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose2}>Cancel</Button>
-          <Button onClick={handleClose2}>Subscribe</Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+          
+          <Grid container direction="row" justifyContent="center" alignItems="center">
+            <div className="logo-container" s>
+              <img className="logo" src={img}></img>
+            </div>
+            <div>
+              
+              <Typography variant="h5" component="div" sx={{ flexGrow: 3 }}>
+                TravelBug
+              </Typography>
+            </div>
+          </Grid>
+          
           {auth && (
             <div>
               <IconButton
@@ -112,13 +183,13 @@ export default function Header() {
                 id="menu-appbar"
                 anchorEl={anchorEl}
                 anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 keepMounted
                 transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
@@ -131,7 +202,6 @@ export default function Header() {
         </Toolbar>
       </AppBar>
     </Box>
+
   );
 }
-
-
