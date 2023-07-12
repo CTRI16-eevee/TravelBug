@@ -16,7 +16,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import createPost from "./createPost";
 import { Grid } from "@mui/material";
-import img from ".Assets/minimalist_cartoon_cute_logo_a_bug_wearing_a_hat_with_bae519a6-e95f-44fe-b62a-81e8065641eb-removebg-preview.png"
+// Local imports
+import img from "../Assets/buggy.png";
 export default function Header() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -47,9 +48,12 @@ export default function Header() {
             <MenuIcon />
           </IconButton>
           
-          <Grid container direction="row" justifyContent="center">
+          <Grid container direction="row" justifyContent="center" alignItems="center">
+            <div className="logo-container" s>
+              <img className="logo" src={img}></img>
+            </div>
             <div>
-              <img src={img}></img>
+              
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 TravelBug
               </Typography>

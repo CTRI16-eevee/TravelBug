@@ -30,7 +30,10 @@ module.exports = {
         exclude: /node_modules/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
-      
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i, 
+        loader: 'file-loader',
+      }
     ],
   },
   resolve: {
