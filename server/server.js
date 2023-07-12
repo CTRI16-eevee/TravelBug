@@ -1,6 +1,7 @@
 // uses .env file that is gitignored for port instead of showing port
 require('dotenv').config({ path: '../.env' });
 const userRoutes = require('./routes/userRoutes');
+const feedRoutes = require('./routes/feedRoutes');
 
 // various requires
 const express = require('express');
@@ -20,11 +21,13 @@ app.use(express.static(path.resolve(__dirname, '../client/build')));
 // routes
 app.use('/user', userRoutes);
 
-// app.use('/feed', feedRoutes);
+app.use('/feed', feedRoutes);
 
 // on visiting homepage, send index.html file
 app.get('/*', (req, res) => {
-  return res.status(200).sendFile(path.resolve(__dirname, '../client/build/index.html'));
+  return res
+    .status(200)
+    .sendFile(path.resolve(__dirname, '../client/build/index.html'));
 });
 
 // 404
