@@ -33,9 +33,9 @@ app.use(cors({
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
 // routes
-app.use('/user', userRoutes);
+app.use('/api/user', userRoutes);
 
-app.use('/feed', feedRoutes);
+app.use('/api/feed', feedRoutes);
 
 // on visiting homepage, send index.html file
 app.get('/*', (req, res) => {

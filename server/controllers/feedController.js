@@ -2,6 +2,18 @@ const db = require('../models/model');
 
 const feedController = {};
 
+/* SHAPE OF POST IN DB
+id - PK
+author_id - UID FK
+continent_id - FK
+date - timestamp 
+likes - integer
+image - link
+title - text 
+rating - integer
+content - text
+*/
+
 feedController.addPost = async (req, res, next) => {
   try {
     const { author_id, continent_id, image, title, rating, content } = req.body;
@@ -22,7 +34,7 @@ feedController.addPost = async (req, res, next) => {
       RETURNING *
     `;
     const newPost = await db.query(addPostQuery, values);
-    console.log('THIS IS NEW POST', newPost.rows);
+    // console.log('THIS IS NEW POST', newPost.rows);
     return next();
   } catch (err) {
     console.log('ERROR OCCURED IN feedController.addPost:', error);
@@ -38,7 +50,7 @@ feedController.getPosts = async (req, res, next) => {
       ORDER BY date DESC
     `;
     const posts = await db.query(getPostQuery);
-    console.log('THESE ARE THE POSTS:', posts.rows);
+    // console.log('THESE ARE THE POSTS:', posts.rows);
     res.locals.posts = posts.rows;
     return next();
   } catch (err) {
@@ -59,7 +71,7 @@ feedController.deletePost = async (req, res, next) => {
       RETURNING *
     `;
     const deletePost = await db.query(deleteQuery, values);
-    console.log(deletePost);
+    // console.log('THIS IS THE DELETED POST', deletePost);
     return next();
   } catch (error) {
     console.log('ERROR OCCURED IN feedController.deletePost:', error);
@@ -86,7 +98,8 @@ feedController.likePost = async (req, res, next) => {
   }
 };
 
-/**
+/** COMMENT CONTROLLERS
+ * SHAPE OF COMMENT IN DB
  * id
  * author_id
  * post_id
@@ -155,14 +168,4 @@ feedController.getComments = async (req, res, next) => {
 
 module.exports = feedController;
 
-/*
-id - PK
-author_id - UID FK
-continent_id - FK
-date - timestamp 
-likes - integer
-image - link
-title - text 
-rating - integer
-content - text
-*/
+

@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const userController = {};
 
+// helper to check if username is unique returns result of querying DB for username
 const doesUserNameExist = async (username) => {
   const check = `
       SELECT * 
@@ -102,7 +103,7 @@ userController.signJWT = async (req, res, next) => {
   }
 };
 
-// will be used for verifying authorization to secret routes
+// used for verifying authorization to secret routes
 userController.verifyJWT = async (req, res, next) => {
   try {
     // console.log('THIS IS HEADER', req.headers);
@@ -202,28 +203,22 @@ userController.editUser = async (req, res, next) => {
   }
 };
 
-userController.getInfo = async (req, res, next) => {
+// returns all posts made by user
+userController.getUserPosts = async (req, res, next) => {
   try {
     console.log(req.params);
     const { id } = req.params;
     const values = [id];
-    // const userInfoQuery = `
-    // SELECT
-    // FROM _user
-    // WHERE id = $1
-    // `;
     const userPostsQuery = `
     SELECT *
     FROM _post
     WHERE author_id = $1
     `;
-    // const userInfo = await db.query(userInfoQuery, values);
     const userPosts = await db.query(userPostsQuery, values);
     res.locals.allInfo = {
       userPosts: userPosts.rows,
-      // userInfo: userInfo.rows[0],
     };
-    console.log(res.locals.allInfo);
+    // console.log(res.locals.allInfo);
     return next();
   } catch (err) {
     console.log('ERROR OCCURRED IN userController.getInfo: ', err);

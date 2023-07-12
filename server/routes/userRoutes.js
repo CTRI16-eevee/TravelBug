@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 
+// signing up a user
 router.post(
   '/signup',
   userController.checkUser,
@@ -12,6 +13,7 @@ router.post(
   },
 );
 
+// logging in a user
 router.post(
   '/login',
   userController.loginUser,
@@ -21,6 +23,7 @@ router.post(
   },
 );
 
+// logging out a user
 router.post(
   '/logout',
   userController.verifyJWT,
@@ -30,15 +33,17 @@ router.post(
   },
 );
 
+// getting profile data, user post info for profile page
 router.get(
   '/:id',
   userController.verifyJWT,
-  userController.getInfo,
+  userController.getUserPosts,
   (req, res, next) => {
     res.status(200).json(res.locals.allInfo);
   },
-); // getting profile data, including post info
+); 
 
+// editing a users username, prof_pic, password
 router.patch(
   '/edit',
   userController.verifyJWT,
@@ -48,6 +53,7 @@ router.patch(
   },
 ); // editing user account
 
+// deleting a user
 router.delete(
   '/delete',
   userController.verifyJWT,
@@ -55,6 +61,6 @@ router.delete(
   (req, res, next) => {
     res.sendStatus(200);
   },
-); // deleting account
+);
 
 module.exports = router;
