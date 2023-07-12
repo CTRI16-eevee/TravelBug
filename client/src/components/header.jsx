@@ -15,6 +15,7 @@ import FormGroup from "@mui/material/FormGroup";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import createPost from "./createPost";
+import { Grid } from "@mui/material";
 
 export default function Header() {
   const [auth, setAuth] = React.useState(true);
@@ -45,9 +46,15 @@ export default function Header() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            TravelBug
-          </Typography>
+          
+          <Grid container direction="row" justifyContent="center">
+            <div>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                TravelBug
+              </Typography>
+            </div>
+          </Grid>
+          
           {auth && (
             <div>
               <IconButton
