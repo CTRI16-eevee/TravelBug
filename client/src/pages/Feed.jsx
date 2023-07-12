@@ -59,9 +59,9 @@ const Feed = () => {
   const handlePost = () => {
     const postData = {
       author_id: 24,
-      content: 1,
+      continent_id: continents.indexOf(location) + 1,
       image: imgURL,
-      title: "we dont have titles rip",
+      title: title,
       rating,
       content: review,
     };
@@ -86,12 +86,12 @@ const Feed = () => {
   };
 
   const continents = [
+    "Africa",
+    "Asia",
+    "Europe",
+    "Oceania",
     "North America",
     "South America",
-    "Europe",
-    "Asia",
-    "Africa",
-    "Australia",
     "Antarctica",
   ];
 
@@ -112,6 +112,7 @@ const Feed = () => {
                   id="combo-box-demo"
                   options={continents}
                   sx={{ width: 300 }}
+                  value={location}
                   onChange={(e, value) => setLocation(value)}
                   renderInput={(params) =>
                     <TextField {...params} label="Location" />
