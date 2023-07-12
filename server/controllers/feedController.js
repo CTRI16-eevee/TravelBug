@@ -46,9 +46,10 @@ feedController.addPost = async (req, res, next) => {
 feedController.getPosts = async (req, res, next) => {
   try {
     const getPostQuery = `
-      SELECT * 
-      FROM _post
-      ORDER BY date DESC
+      SELECT p.*, c.name AS continent_name
+      FROM _post AS p
+      JOIN _continent AS c ON p.continent_id = c.id
+      ORDER BY p.date DESC;
     `;
     const posts = await db.query(getPostQuery);
     // console.log('THESE ARE THE POSTS:', posts.rows);

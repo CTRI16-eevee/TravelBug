@@ -107,11 +107,13 @@ function submitHandler() {
     .then((data) => {
       // Handle the response data
       console.log(data);
+      const { id, profilePicture } = data;
+      // return object with id:, profilePicture
       // navigate('/feed');
-      logInUser(usernameInput, secretInput);
+      logInUser(usernameInput, profilePicture, id);
       setUsernameInput('');
       setSecretInput('');
-      navigate('/feed')
+      navigate('/feed');
     })
     .catch((error) => {
       // Handle any errors
