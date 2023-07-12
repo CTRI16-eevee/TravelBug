@@ -58,7 +58,8 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function Post() {
+export default function Post(props) {
+  const {title, continent, date, likes, image, rating, content} = props;
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -71,7 +72,7 @@ export default function Post() {
       <CardHeader
         avatar={
           /* pull profile url from props */
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe" src={"client/src/Assets/buggy.png"}>
             R
           </Avatar>
         }
@@ -80,24 +81,24 @@ export default function Post() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Location"
-        subheader="September 14, 2016"
+        title={title}
+        subheader={date.slice(0,10)}
         
       />
       {/* pass ratings prop (integer 1-5) into Stars funtion */}
-      <Typography ml={2} variant='h5'>{Stars(4)}</Typography>
+      <Typography ml={2} variant='h5'>{Stars({rating})}</Typography>
       
       <CardMedia
         component="img"
         height="194"
         // image url from props will go here
-        image="https://t0.gstatic.com/licensed-image?q=tbn:ANd9GcR1qIrvvnZAf97oi8ywnd93WZd4utSPnwGrXoSufKbexeNooMGlTRJL-H-HuvLhf4mS"
+        image={image}
         alt="Paella dish"
       />
       <CardContent>
         {/* discription from props will go here (location review)*/}
         <Typography variant="body2" color="text.secondary">
-          This is my review of the location that I visited. I had a great Paella at the local restaurant
+          {content}
         </Typography>
       </CardContent>
       <CardActions>
