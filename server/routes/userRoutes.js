@@ -9,7 +9,7 @@ router.post(
   userController.signJWT,
   (req, res, next) => {
     res.status(200).json(res.locals.newUser);
-  }
+  },
 );
 
 router.post(
@@ -18,7 +18,7 @@ router.post(
   userController.signJWT,
   (req, res, next) => {
     res.status(200).json(res.locals.userInfo);
-  }
+  },
 );
 
 router.post(
@@ -27,12 +27,17 @@ router.post(
   userController.logoutUser,
   (req, res, next) => {
     res.sendStatus(200);
-  }
+  },
 );
 
-router.get('/:id', userController.getInfo, (req, res, next) => {
-  res.status(200).json(res.locals.allInfo);
-}); // getting profile data, including post info
+router.get(
+  '/:id',
+  userController.verifyJWT,
+  userController.getInfo,
+  (req, res, next) => {
+    res.status(200).json(res.locals.allInfo);
+  },
+); // getting profile data, including post info
 
 router.patch(
   '/edit',
@@ -40,7 +45,7 @@ router.patch(
   userController.editUser,
   (req, res, next) => {
     res.sendStatus(200);
-  }
+  },
 ); // editing user account
 
 router.delete(
@@ -49,7 +54,7 @@ router.delete(
   userController.deleteUser,
   (req, res, next) => {
     res.sendStatus(200);
-  }
+  },
 ); // deleting account
 
 module.exports = router;
