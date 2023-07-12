@@ -11,6 +11,7 @@ module.exports = {
   plugins: [
     new HTMLWebpackPlugin({
       template: './src/index.html',
+      favicon: "./buggy.ico"
     }),
   ],
   module: {
