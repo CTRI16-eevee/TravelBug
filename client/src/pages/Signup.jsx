@@ -92,7 +92,7 @@ export default function Signup() {
       password: secretInput,
     };
   
-    fetch('http://localhost:3000/user/signup', {
+    fetch('http://localhost:3000/api/user/signup', {
       method: 'POST',
       credentials: 'include',
       headers: {
