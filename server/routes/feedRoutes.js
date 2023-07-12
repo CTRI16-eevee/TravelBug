@@ -9,7 +9,7 @@ router.get('/', feedController.getPosts, (req, res, next) => {
 // router.get('/_id')
 
 router.post('/', feedController.addPost, (req, res, next) => {
-  res.sendStatus(200);
+  res.status(200).json(res.locals.newPost);
 });
 
 router.delete('/', feedController.deletePost, (req, res, next) => {

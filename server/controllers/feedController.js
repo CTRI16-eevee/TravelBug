@@ -22,10 +22,11 @@ feedController.addPost = async (req, res, next) => {
       RETURNING *
     `;
     const newPost = await db.query(addPostQuery, values);
+    res.locals.newPost = newPost.rows
     console.log('THIS IS NEW POST', newPost.rows);
     return next();
   } catch (err) {
-    console.log('ERROR OCCURED IN feedController.addPost:', error);
+    console.log('ERROR OCCURED IN feedController.addPost:', err);
     next({ error: 'Error occured when trying to post' });
   }
 };
