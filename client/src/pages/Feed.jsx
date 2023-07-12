@@ -59,7 +59,7 @@ const [rating, setRating] = useState(0);
     const handlePost = () => {
       const postData = {
         author_id: 24,
-        content: 1,
+        continent_id: 1,
         image: imgURL,
         title: "we dont have titles rip",
         rating,
