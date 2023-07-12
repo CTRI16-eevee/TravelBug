@@ -30,22 +30,45 @@ const toggleFeedAuth = true;
 
 const Feed = () => {
   const navigate = useNavigate();
+
   // hooks
   const [imgURL, setImgURL] = useState("");
   const [location, setLocation] = useState("");
   const [review, setReview] = useState("");
   const [rating, setRating] = useState(0);
-  const [title, setTitle] = useState("")
+  const [title, setTitle] = useState("");
+  const [posts, setPosts] = useState([]);
   //check if user has logged in
-  const isLoggedIn = useAppStore((state) => state.isLoggedIn);
-  const userData = useAppStore((state) => state.userData);
 
-  // check user authorization
+
+  
+  const state = useAppStore(state);
+  const {username, id, avatar, isLoggedIn} = state;
+  
   useEffect(() => {
-    if (!isLoggedIn && toggleFeedAuth) navigate("/");
-  }, []);
+    console.log('This is username, id, avatar', username, id, avatar)
+  }, [state]);
+  // const isLoggedIn = useAppStore((state) => state.isLoggedIn);
+  // const username = useAppStore((state) => state.username);
+  // const avatar = useAppStore((state) => state.username);
+  
+    // check user authorization and render posts if logged in
+    useEffect(() => {
+      if (!isLoggedIn && toggleFeedAuth) navigate('/');
+      fetch('/api/feed')
+      .then((data) => data.json())
+      .then((res) => {
+        setPosts(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }, []);
 
-  //
+    useEffect(() => {
+      console.log(posts)
+    }, [posts])
+    
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -56,22 +79,22 @@ const Feed = () => {
     setOpen(false);
   };
 
-  const handlePost = () => {
-    const postData = {
-      author_id: 24,
-      continent_id: continents.indexOf(location) + 1,
-      image: imgURL,
-      title: title,
-      rating,
-      content: review,
-    };
-    fetch("/api/feed", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(postData),
-    })
+    const handlePost = () => {
+      const postData = {
+        author_id: id,
+        continent_id: continents.indexOf(location) + 1,
+        image: imgURL,
+        title: title,
+        rating,
+        content: review
+      }
+      fetch('/api/feed', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+      })
       .then((data) => data.json())
       .then((res) => {
         // TODO:
@@ -170,11 +193,27 @@ const Feed = () => {
               </DialogActions>
             </Dialog>
           </div>
-        </Grid>
-        <Post />
-      </div>
-    </Grid>
-  );
-};
+          </Grid>
+          {posts.map((post) => {
+            return (
+              <Post 
+              id={post.id}
+              username={post.username}
+              profile_picture={post.profile_picture}
+              title={post.title}
+              continent={post.continent}
+              date={post.date}
+              likes={post.likes}
+              image={post.image}
+              rating={post.rating}
+              content={post.content}
+              />
+            )
+          })}
+        </div>
+      </Grid> 
+    )
+}
+
 
 export default Feed;

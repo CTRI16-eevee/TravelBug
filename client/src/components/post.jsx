@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -47,6 +48,8 @@ const comSec = Array(
 
 
 
+
+
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
@@ -58,21 +61,29 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function Post() {
-  const [expanded, setExpanded] = React.useState(false);
+export default function Post(props) {
+  const {id, username, profile_picture, title, continent, date, likes, image, rating, content} = props;
+  const [expanded, setExpanded] = useState(false);
+  const [comments, setComments] = useState([]);
 
-  const handleExpandClick = () => {
+  const handleExpandClick = async () => {
+    try {
+      const commentData = await fetch(`/api/feed/comment/${id}`);
+      const comments = await commentData.json();
+      setComments(comments);
+    } catch (err) {
+      console.log(err);
+    }
     setExpanded(!expanded);
   };
 
-  
   return ( 
     <Card sx={{ maxWidth: 345 }}>
       <CardHeader
         avatar={
           /* pull profile url from props */
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
+          <Avatar  aria-label="recipe" src={profile_picture}>
+            
           </Avatar>
         }
         action={
@@ -80,24 +91,24 @@ export default function Post() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Location"
-        subheader="September 14, 2016"
+        title={title}
+        subheader={date.slice(0,10)}
         
       />
       {/* pass ratings prop (integer 1-5) into Stars funtion */}
-      <Typography ml={2} variant='h5'>{Stars(4)}</Typography>
+      <Typography ml={2} variant='h5'>{Stars({rating})}</Typography>
       
       <CardMedia
         component="img"
         height="194"
         // image url from props will go here
-        image="https://t0.gstatic.com/licensed-image?q=tbn:ANd9GcR1qIrvvnZAf97oi8ywnd93WZd4utSPnwGrXoSufKbexeNooMGlTRJL-H-HuvLhf4mS"
+        image={image}
         alt="Paella dish"
       />
       <CardContent>
         {/* discription from props will go here (location review)*/}
         <Typography variant="body2" color="text.secondary">
-          This is my review of the location that I visited. I had a great Paella at the local restaurant
+          {content}
         </Typography>
       </CardContent>
       <CardActions>
@@ -111,10 +122,16 @@ export default function Post() {
       </ExpandMore>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
           {/* where comments will go when we have them */}
-          {comSec.map((el, i) => {
-   return <Comment comment={el} i={i}/>;
-  })}
-        
+          {comments.map((comment, i) => {
+            return <Comment 
+              content={comment.content}
+              username={comment.username}
+              profile_picture={comment.profile_picture}
+              date={comment.date}
+              likes={comment.likes} 
+              i={i}
+            />;
+          })}
       </Collapse>
       </CardActions>
       <CardContent >
@@ -132,7 +149,7 @@ export default function Post() {
           ),  
         }} variant="outlined"></TextField>  
       </CardContent>
-      
+  
       
 
       <CardActions >

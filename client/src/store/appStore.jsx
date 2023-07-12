@@ -3,14 +3,14 @@ import {create} from 'zustand';
 
 const useAppStore = create((set) => ({
     username: '',
-    secret: '',
     avatar: '',
+    id: '',
     isLoggedIn: false,
-    logInUser: (username, secret, avatar, userData) =>
+    logInUser: (username, avatar, id, userData) =>
       set(() => ({
         username: username,
-        secret: secret,
         avatar: avatar,
+        id: id,
         isLoggedIn: true,
         userData: userData,
       })),
