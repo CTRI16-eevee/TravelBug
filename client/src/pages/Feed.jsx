@@ -60,6 +60,10 @@ const [posts, setPosts] = useState([]);
         console.log(error);
       });
     }, []);
+
+    useEffect(() => {
+      console.log(posts)
+    }, [posts])
     
     const [open, setOpen] = React.useState(false);
 
@@ -170,6 +174,9 @@ const [posts, setPosts] = useState([]);
           {posts.map((post) => {
             return (
               <Post 
+              id={post.id}
+              username={post.username}
+              profile_picture={post.profile_picture}
               title={post.title}
               continent={post.continent}
               date={post.date}
