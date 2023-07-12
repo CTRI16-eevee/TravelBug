@@ -36,7 +36,7 @@ function Copyright() {
   );
 }
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -45,6 +45,8 @@ export default function Profile() {
 
 
 const username = useAppStore(state => state.username);
+const userID = useAppStore(state => state.id);
+console.log(userID)
 const navigate = useNavigate();
 const [posts, setPosts] = useState([]);
 
@@ -64,7 +66,7 @@ const [posts, setPosts] = useState([]);
   //GET fetch request to show posts specific to user
   useEffect(() => {
     // Fetch all posts
-    fetch('http://localhost:3000/api/user/24')
+    fetch(`http://localhost:3000/api/user/${userID}`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -141,10 +143,10 @@ const [posts, setPosts] = useState([]);
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {post.id}
+                      {post.title}
                     </Typography>
                     <Typography>
-                    {post.title}
+                    {post.content}
                     </Typography>
                   </CardContent>
                   <CardActions>
