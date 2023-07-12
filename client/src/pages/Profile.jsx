@@ -84,6 +84,29 @@ const [posts, setPosts] = useState([]);
   }, []);
 
 
+    // DELETE handler to delete a post
+    const deletePostHandler = (postId) => {
+        fetch(`http://localhost:3000/api/feed/`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id: postId }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              // Remove the deleted post from the local state
+              const updatedPosts = posts.filter((post) => post.id !== postId);
+              setPosts(updatedPosts);
+            } else {
+              throw new Error('Error deleting post');
+            }
+          })
+          .catch((error) => {
+            console.error('Error deleting post:', error);
+          });
+      };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -151,7 +174,7 @@ const [posts, setPosts] = useState([]);
                   </CardContent>
                   <CardActions>
                     <Button size="small">Edit</Button>
-                    <Button size="small">Delete</Button>
+                    <Button size="small" onClick={() => deletePostHandler(post.id)} >Delete</Button>
                   </CardActions>
                 </Card>
               </Grid>

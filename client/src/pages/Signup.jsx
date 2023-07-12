@@ -86,6 +86,7 @@ export default function Signup() {
   //   setSignupErrorText(null);
   // }
 
+ 
   function submitHandler() {
     const userData = {
       username: usernameInput,
