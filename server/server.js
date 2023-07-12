@@ -2,6 +2,7 @@
 require('dotenv').config({ path: '../.env' });
 const userRoutes = require('./routes/userRoutes');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 // various requires
 const express = require('express');
@@ -12,12 +13,19 @@ const port = process.env.PORT || 2000;
 // express app
 const app = express();
 
+//enabled cookie parser
+app.use(cookieParser());
+
 // always parses json
 app.use(express.json());
 
 // This code allows the express server to communicate with other servers and allows for the use of the cors package to communicate with the front end.
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:8080',
+  credentials: true,
+  exposedHeaders: ['Content-Length', 'X-Powered-By']
+}));
 
 
 // will serve the static assets in build folder in client side, (index.html will be able to use css and bundle.js)
