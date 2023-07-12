@@ -19,6 +19,10 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import { TextField } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import Button from '@mui/material/Button';
+
+// Local imports
+import Comment from './comment';
+
 const Stars = (rating) => {
   const ratingArr = [];
   for (let i = 0; i < rating; i++) {
@@ -26,6 +30,22 @@ const Stars = (rating) => {
   }
   return ratingArr;
 }
+
+// random object to act as comments
+const comSec = Array(
+  {
+    comment: "This is sick!",
+    pfp: "https://t0.gstatic.com/licensed-image?q=tbn:ANd9GcR1qIrvvnZAf97oi8ywnd93WZd4utSPnwGrXoSufKbexeNooMGlTRJL-H-HuvLhf4mS",
+    username: "username"
+  },
+  {
+    comment: "This is Gross!",
+    pfp: "https://t0.gstatic.com/licensed-image?q=tbn:ANd9GcR1qIrvvnZAf97oi8ywnd93WZd4utSPnwGrXoSufKbexeNooMGlTRJL-H-HuvLhf4mS",
+    username: "username"
+  },
+);
+
+
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -45,6 +65,7 @@ export default function Post() {
     setExpanded(!expanded);
   };
 
+  
   return ( 
     <Card sx={{ maxWidth: 345 }}>
       <CardHeader
@@ -90,12 +111,9 @@ export default function Post() {
       </ExpandMore>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
           {/* where comments will go when we have them */}
-        
-          hi hi hi hi hi hi hi hi hi ho ho ho ho ho ho ho ho ho ho ho ho ho hi hi hi hi hi hi hi hi
-
-          hihi
-
-          hihi
+          {comSec.map((el, i) => {
+   return <Comment comment={el} i={i}/>;
+  })}
         
       </Collapse>
       </CardActions>
@@ -109,7 +127,7 @@ export default function Post() {
           ),
           endAdornment: (
             <InputAdornment position='end'>
-              <Button>Say it!</Button>
+              <Button>Post!</Button>
             </InputAdornment>
           ),  
         }} variant="outlined"></TextField>  
@@ -130,21 +148,3 @@ export default function Post() {
     </Card>
   );
 }
-
-// import React from "react";
-// import { Card } from "@mui/material";
-// // Location, Rating
-// // image
-// // comment section
-// // comment input, more button
-// const Post = () => {
-//   return (
-//     <Card>
-//       <div>
-        
-//       </div>
-      
-//     </Card>
-//   );
-// }
-// export default Post;
