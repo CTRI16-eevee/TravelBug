@@ -35,17 +35,32 @@ const [imgURL, setImgURL] = useState('');
 const [location, setLocation] = useState('');
 const [review, setReview] = useState('');
 const [rating, setRating] = useState(0);
+const [posts, setPosts] = useState([]);
   //check if user has logged in
-  const isLoggedIn = useAppStore((state) => state.isLoggedIn);
-  const userData = useAppStore((state) => state.userData);
 
-    // check user authorization
+  const state = useAppStore(state);
+  const {username, id, avatar, isLoggedIn} = state;
+  
+  useEffect(() => {
+    console.log('This is username, id, avatar', username, id, avatar)
+  }, [state]);
+  // const isLoggedIn = useAppStore((state) => state.isLoggedIn);
+  // const username = useAppStore((state) => state.username);
+  // const avatar = useAppStore((state) => state.username);
+  
+    // check user authorization and render posts if logged in
     useEffect(() => {
       if (!isLoggedIn && toggleFeedAuth) navigate('/');
+      fetch('/api/feed')
+      .then((data) => data.json())
+      .then((res) => {
+        setPosts(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }, []);
-
-
-    //
+    
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -58,8 +73,8 @@ const [rating, setRating] = useState(0);
 
     const handlePost = () => {
       const postData = {
-        author_id: 24,
-        content: 1,
+        author_id: id,
+        continent_id: 1,
         image: imgURL,
         title: "we dont have titles rip",
         rating,
@@ -152,7 +167,19 @@ const [rating, setRating] = useState(0);
             </Dialog>
           </div>
           </Grid>
-          <Post />
+          {posts.map((post) => {
+            return (
+              <Post 
+              title={post.title}
+              continent={post.continent}
+              date={post.date}
+              likes={post.likes}
+              image={post.image}
+              rating={post.rating}
+              content={post.content}
+              />
+            )
+          })}
         </div>
       </Grid>
       

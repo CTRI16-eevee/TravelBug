@@ -14,7 +14,7 @@ import FormGroup from '@mui/material/FormGroup';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import createPost from './createPost';
-
+import { Grid } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -25,87 +25,72 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Avatar from '@mui/material/Avatar';
 import useAppStore from '../store/appStore';
 
-
-// profile picture
-// Title
-// sign out
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import createPost from "./createPost";
-import { Grid } from "@mui/material";
-// Local imports
 import img from "../Assets/buggy.png";
 
 export default function Header() {
   //checking if user is still logged in
-  const isLoggedIn = useAppStore((state) => state.isLoggedIn);
-  const username = useAppStore((state) => state.username);
+  const isLoggedIn = useAppStore(state => state.isLoggedIn);
+  const username = useAppStore(state => state.username);
 
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleChange = (event) => {
+  const handleChange = event => {
     setAuth(event.target.checked);
   };
 
-  const handleMenu = (event) => {
+  const handleMenu = event => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleClickOpen = () => {
+    console.log('click')
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-  <AppBar position="static">
-    <Toolbar style={{ justifyContent: 'flex-end' }}>
-      <div style={{ marginRight: 'auto' }}>
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-        >
-          <MenuIcon />
-        </IconButton>
-      </div>
-      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-        TravelBug
-      </Typography>
-      <div>
-        <Button variant="outlined" onClick={handleClickOpen}>
-          Open form dialog
-        </Button>
-        {/* Rest of your code */}
-      </div>
-      {auth && isLoggedIn && (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              opacity: '80%',
-              fontSize: '1.3rem',
-              marginRight: '0.5rem',
-              marginTop: '0.6rem',
-              verticalAlign: 'middle',
-            }}
-          >
-            {username}
-          </Typography>
-          {/* <IconButton
+      <AppBar position='static'>
+        <Toolbar style={{ justifyContent: 'flex-end' }}>
+          <div style={{ marginRight: 'auto' }}>
+            <Grid
+              container
+              direction='row'
+              justifyContent='center'
+              alignItems='center'
+            >
+              <div className='logo-container' s>
+                <img className='logo' src={img}></img>
+              </div>
+              <div>
+                <Typography variant='h5' component='div' sx={{ flexGrow: 3 }}>
+                  TravelBug
+                </Typography>
+              </div>
+            </Grid>
+            <Button variant='outlined' onClick={handleClickOpen}>
+              Open form dialog
+            </Button>
+          </div>
+
+          {auth && isLoggedIn && (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Typography
+                variant='h6'
+                component='div'
+                sx={{
+                  opacity: '80%',
+                  fontSize: '1.3rem',
+                  marginRight: '0.5rem',
+                  marginTop: '0.6rem',
+                  verticalAlign: 'middle',
+                }}
+              >
+                {username}
+              </Typography>
+              {/* <IconButton
             size="large"
             aria-label="account of current user"
             aria-controls="menu-appbar"
@@ -117,79 +102,23 @@ export default function Header() {
 
             <AccountCircle />
           </IconButton> */}
-          <Avatar
-            onClick={handleMenu}
-            alt="travel bug icon"
-            src="/client/assets/TravelBugIcon.png"
-            sx={{ width: 30,
-                  height: 30, 
-                  verticalAlign: 'middle',
-                 
-                }}
-          />
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
-            <MenuItem onClick={handleClose}>Sign Out</MenuItem>
-          </Menu>
-        </div>
-      )}
-    </Toolbar>
-  </AppBar>
-</Box>
-
-
-            <MenuIcon />
-          </IconButton>
-          
-          <Grid container direction="row" justifyContent="center" alignItems="center">
-            <div className="logo-container" s>
-              <img className="logo" src={img}></img>
-            </div>
-            <div>
-              
-              <Typography variant="h5" component="div" sx={{ flexGrow: 3 }}>
-                TravelBug
-              </Typography>
-            </div>
-          </Grid>
-          
-          {auth && (
-            <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
+              <Avatar
                 onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
+                alt='travel bug icon'
+                src='/client/assets/TravelBugIcon.png'
+                sx={{ width: 30, height: 30, verticalAlign: 'middle' }}
+              />
               <Menu
-                id="menu-appbar"
+                id='menu-appbar'
                 anchorEl={anchorEl}
                 anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
+                  vertical: 'top',
+                  horizontal: 'right',
                 }}
                 keepMounted
                 transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
+                  vertical: 'top',
+                  horizontal: 'right',
                 }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
@@ -202,6 +131,5 @@ export default function Header() {
         </Toolbar>
       </AppBar>
     </Box>
-
   );
 }
