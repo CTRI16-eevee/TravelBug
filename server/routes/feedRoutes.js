@@ -33,7 +33,7 @@ router.get('/', feedController.getPosts, (req, res, next) => {
 
 // make a post
 router.post('/', feedController.addPost, (req, res, next) => {
-  res.sendStatus(200);
+  res.status(200).json(res.locals.newPost);
 });
 
 // delete a post

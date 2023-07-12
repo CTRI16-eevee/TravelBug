@@ -27,12 +27,14 @@ toggleDashboardAuth = false, deactivates dashboard page authorization
 */
 const toggleFeedAuth = true;
 
-
-
  const Feed = () => {
 
   const navigate = useNavigate();
-
+// hooks
+const [imgURL, setImgURL] = useState('');
+const [location, setLocation] = useState('');
+const [review, setReview] = useState('');
+const [rating, setRating] = useState(0);
   //check if user has logged in
   const isLoggedIn = useAppStore((state) => state.isLoggedIn);
   const userData = useAppStore((state) => state.userData);
@@ -54,8 +56,37 @@ const toggleFeedAuth = true;
       setOpen(false);
     };
 
+    const handlePost = () => {
+      const postData = {
+        author_id: 24,
+        content: 1,
+        image: imgURL,
+        title: "we dont have titles rip",
+        rating,
+        content: review
+      }
+      fetch('/api/feed', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+      })
+      .then((data) => data.json())
+      .then((res) => {
+        // TODO: 
+          // create post passing in data from fetch
+          // unshift posts array passing post to put users new post on top of feed
+        console.log("this is RES", res)
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.log(error);
+      });
+      
+    };
 
-
+    
     return (
       <Grid container justifyContent={"center"}>
         <div>
@@ -75,6 +106,8 @@ const toggleFeedAuth = true;
                   id="name"
                   label="Image URL"
                   type="email"
+                  value={imgURL}
+                  onChange={(e) => setImgURL(e.target.value)}
                   fullWidth
                   variant="standard"
                 />
@@ -84,6 +117,8 @@ const toggleFeedAuth = true;
                   id="name"
                   label="Location"
                   type="email"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
                   fullWidth
                   variant="standard"
                 />
@@ -93,6 +128,8 @@ const toggleFeedAuth = true;
                   id="name"
                   label="Review"
                   type="email"
+                  value={review}
+                  onChange={(e) => setReview(e.target.value)}
                   fullWidth
                   variant="standard"
                 />
@@ -102,13 +139,15 @@ const toggleFeedAuth = true;
                   id="name"
                   label="Rating 1-5"
                   type="email"
+                  value={rating}
+                  onChange={(e) => setRating(Number(e.target.value))}
                   fullWidth
                   variant="standard"
                 />
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleClose}>Post</Button>
+                <Button onClick={handlePost}>Post</Button>
               </DialogActions>
             </Dialog>
           </div>
