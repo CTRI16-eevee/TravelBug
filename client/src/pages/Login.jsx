@@ -52,31 +52,76 @@ export default function Login() {
   const [secretInput, setSecretInput] = useState('');
   const [loginErrorText, setLoginErrorText] = useState(null);
 
-  function submitHandler() {
-    /* authenticate by checking for a username key within IndexedDB
-    if there is a user, use the password as the AES encryption secret, 
-    and look for a verifiable property on the value object
-    */
-  get(usernameInput)
-  .then((data) => {
-    const bytes = AES.decrypt(data, secretInput);
-    const decryptResponse = bytes.toString(CryptoJS.enc.Utf8);
-    const originalText = JSON.parse(decryptResponse);
-    if (originalText.decryption === 'isValid') {
-      // populate global state store with decrypted IDB value, which holds user data
-      logInUser(usernameInput, secretInput, originalText);
+//KT's code for login in a user within indexDB 
+//   function submitHandler() {
+//     /* authenticate by checking for a username key within IndexedDB
+//     if there is a user, use the password as the AES encryption secret, 
+//     and look for a verifiable property on the value object
+//     */
+//   get(usernameInput)
+//   .then((data) => {
+//     const bytes = AES.decrypt(data, secretInput);
+//     const decryptResponse = bytes.toString(CryptoJS.enc.Utf8);
+//     const originalText = JSON.parse(decryptResponse);
+//     if (originalText.decryption === 'isValid') {
+//       // populate global state store with decrypted IDB value, which holds user data
+//       logInUser(usernameInput, secretInput, originalText);
+//       setUsernameInput('');
+//       setSecretInput('');
+//       setLoginErrorText(null);
+//       navigate('/feed');
+//       console.log(data)
+//     } else {
+//       setLoginErrorText('incorrect username or password');
+//     }
+//   })
+//   .catch(() => {
+//     setLoginErrorText('incorrect username or password');
+//   });
+// }
+
+//KT's code to login a user in the PostgreSQL database
+
+function submitHandler() {
+  const userData = {
+    username: usernameInput,
+    password: secretInput,
+  };
+
+  fetch('http://localhost:3000/user/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  })
+    .then((response) => {
+      if (response.ok) {
+        // The POST request was successful
+        return response.json();
+      } else {
+        // The POST request failed
+        throw new Error('Failed to log in');
+      }
+    })
+    .then((data) => {
+      // Handle the response data
+      console.log(data);
+      // navigate('/feed');
+      logInUser(usernameInput, secretInput);
       setUsernameInput('');
       setSecretInput('');
-      setLoginErrorText(null);
-      navigate('/feed');
-    } else {
-      setLoginErrorText('incorrect username or password');
-    }
-  })
-  .catch(() => {
-    setLoginErrorText('incorrect username or password');
-  });
+      navigate('/feed')
+    })
+    .catch((error) => {
+      // Handle any errors
+      console.error(error);
+      setLoginErrorText('Incorrect username and password');
+    });
+
+
 }
+
 
 
   const handleSubmit = (event) => {

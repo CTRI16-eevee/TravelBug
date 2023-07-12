@@ -16,7 +16,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import createPost from "./createPost";
 import { Grid } from "@mui/material";
-
+// Local imports
+import img from "../Assets/buggy.png";
 export default function Header() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -47,8 +48,12 @@ export default function Header() {
             <MenuIcon />
           </IconButton>
           
-          <Grid container direction="row" justifyContent="center">
+          <Grid container direction="row" justifyContent="center" alignItems="center">
+            <div className="logo-container" s>
+              <img className="logo" src={img}></img>
+            </div>
             <div>
+              
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 TravelBug
               </Typography>
