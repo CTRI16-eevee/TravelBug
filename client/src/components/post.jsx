@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -47,6 +48,8 @@ const comSec = Array(
 
 
 
+
+
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
@@ -59,21 +62,28 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function Post(props) {
-  const {title, continent, date, likes, image, rating, content} = props;
-  const [expanded, setExpanded] = React.useState(false);
+  const {id, username, profile_picture, title, continent, date, likes, image, rating, content} = props;
+  const [expanded, setExpanded] = useState(false);
+  const [comments, setComments] = useState([]);
 
-  const handleExpandClick = () => {
+  const handleExpandClick = async () => {
+    try {
+      const commentData = await fetch(`/api/feed/comment/${id}`);
+      const comments = await commentData.json();
+      setComments(comments);
+    } catch (err) {
+      console.log(err);
+    }
     setExpanded(!expanded);
   };
 
-  
   return ( 
     <Card sx={{ maxWidth: 345 }}>
       <CardHeader
         avatar={
           /* pull profile url from props */
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe" src={"client/src/Assets/buggy.png"}>
-            R
+          <Avatar  aria-label="recipe" src={profile_picture}>
+            
           </Avatar>
         }
         action={
@@ -112,10 +122,16 @@ export default function Post(props) {
       </ExpandMore>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
           {/* where comments will go when we have them */}
-          {comSec.map((el, i) => {
-   return <Comment comment={el} i={i}/>;
-  })}
-        
+          {comments.map((comment, i) => {
+            return <Comment 
+              content={comment.content}
+              username={comment.username}
+              profile_picture={comment.profile_picture}
+              date={comment.date}
+              likes={comment.likes} 
+              i={i}
+            />;
+          })}
       </Collapse>
       </CardActions>
       <CardContent >
@@ -133,7 +149,7 @@ export default function Post(props) {
           ),  
         }} variant="outlined"></TextField>  
       </CardContent>
-      
+  
       
 
       <CardActions >
