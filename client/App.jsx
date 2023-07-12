@@ -3,6 +3,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Login from './src/pages/Login';
 import Signup from './src/pages/Signup';
 import Feed from './src/pages/Feed';
+import Profile from './src/pages/Profile';
+
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const darkTheme = createTheme({
@@ -43,6 +45,10 @@ const router = createBrowserRouter([
   {
     path: '/feed',
     element: <Feed />,
+  },
+  {
+    path: '/profile',
+    element: <Profile />,
   },
 
 ]);

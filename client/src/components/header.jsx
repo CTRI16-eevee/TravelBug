@@ -23,15 +23,20 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Avatar from '@mui/material/Avatar';
+
+//import utilities 
 import useAppStore from '../store/appStore';
+import { useNavigate } from 'react-router-dom';
+
 
 import img from "../Assets/buggy.png";
 
 export default function Header() {
-  //checking if user is still logged in
-  const isLoggedIn = useAppStore(state => state.isLoggedIn);
+  // //checking if user is still logged in
+  // const isLoggedIn = useAppStore(state => state.isLoggedIn);
   const username = useAppStore(state => state.username);
-
+  const navigate = useNavigate();
+  
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -75,7 +80,7 @@ export default function Header() {
             </Button>
           </div>
 
-          {auth && isLoggedIn && (
+          {auth &&  (
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Typography
                 variant='h6'
@@ -123,8 +128,8 @@ export default function Header() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>Sign Out</MenuItem>
+                <MenuItem onClick={() => navigate('/profile')}>Profile</MenuItem>
+                <MenuItem onClick={() => navigate('/')}>Sign Out</MenuItem>
               </Menu>
             </div>
           )}

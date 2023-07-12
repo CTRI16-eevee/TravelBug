@@ -36,7 +36,7 @@ router.post(
 // getting profile data, user post info for profile page
 router.get(
   '/:id',
-  userController.verifyJWT,
+  // userController.verifyJWT,
   userController.getUserPosts,
   (req, res, next) => {
     res.status(200).json(res.locals.allInfo);
